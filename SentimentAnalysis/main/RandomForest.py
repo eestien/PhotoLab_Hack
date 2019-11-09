@@ -59,9 +59,17 @@ freq = list(freq.index)
 data['content'] = data['content'].apply(lambda x: " ".join(x for x in x.split() if x not in freq))
 
 #Encoding output labels 'sadness' as '1' & 'happiness' as '0'
+'''
 lbl_enc = preprocessing.LabelEncoder()
 y = lbl_enc.fit_transform(data.sentiment.values)
+'''
 
+# Manual encoding
+uniques = data.sentiment.unique()
+for n, uni in enumerate(uniques):
+    data.loc[data['sentiment'] == uni , 'sentiment'] = n
+y = data.sentiment
+print(y[:2])
 # Splitting into training and testing data in 90:10 ratio
 X_train, X_val, y_train, y_val = train_test_split(data.content.values, y, stratify=y, random_state=42, test_size=0.1, shuffle=True)
 
@@ -69,16 +77,16 @@ X_train, X_val, y_train, y_val = train_test_split(data.content.values, y, strati
 # Extracting Count Vectors Parameters
 count_vect = CountVectorizer(analyzer='word')
 count_vect.fit(data['content'])
-joblib.dump(count_vect, '../model/class_rf.joblib')
+joblib.dump(count_vect, '../model/class_rf_200.joblib')
 X_train_count =  count_vect.transform(X_train)
 X_val_count =  count_vect.transform(X_val)
 
 
 
 # Model 4: Random Forest Classifier
-rf = RandomForestClassifier(n_estimators=50, verbose=10)
+rf = RandomForestClassifier(n_estimators=200, verbose=10, n_jobs=-1)
 rf.fit(X_train_count, y_train)
-joblib.dump(rf, '../model/rf.joblib')
+# joblib.dump(rf, '../model/rf_200.joblib')
 y_pred = rf.predict(X_val_count)
 print('random forest with count vectors accuracy %s' % accuracy_score(y_pred, y_val))
 # random forest with count vectors accuracy 0.7524084778420038

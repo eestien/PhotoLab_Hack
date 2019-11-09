@@ -51,6 +51,7 @@ def de_repeat(text):
     pattern = re.compile(r"(.)\1{2,}")
     return pattern.sub(r"\1\1", text)
 print('Hi')
+
 data['content'] = data['content'].apply(lambda x: " ".join(de_repeat(x) for x in x.split()))
 
 # Code to find the top 10,000 rarest words appearing in the data
@@ -68,28 +69,24 @@ y = lbl_enc.fit_transform(data.sentiment.values)
 X_train, X_val, y_train, y_val = train_test_split(data.content.values, y, stratify=y, random_state=42, test_size=0.1, shuffle=True)
 
 
-
 # Extracting Count Vectors Parameters
 count_vect = CountVectorizer(analyzer='word')
 count_vect.fit(data['content'])
-joblib.dump(count_vect, '../model/class.joblib')
-
-count_vect = joblib.load('../model/class.joblib')
+joblib.dump(count_vect, '../model/class_lsvm.joblib')
 X_train_count =  count_vect.transform(X_train)
 X_val_count =  count_vect.transform(X_val)
 
 
-from sklearn.preprocessing import LabelBinarizer as lb
-from sklearn.multiclass import OneVsRestClassifier
-
 # Model 2: Linear SVM
 lsvm = SGDClassifier(alpha=0.001, random_state=5, max_iter=15, tol=None)
 lsvm.fit(X_train_count, y_train)
+joblib.dump(lsvm, '../model/rf.joblib')
 y_pred = lsvm.predict(X_val_count)
 print('lsvm using count vectors accuracy %s' % accuracy_score(y_pred, y_val))
+# lsvm using count vectors accuracy 0.7928709055876686
 
 
-
+#Below are 8 random statements. The first 4 depict happiness. The last 4 depict sadness
 
 tweets = pd.DataFrame(['I am very happy today! The atmosphere looks cheerful',
 'Things are looking great. It was such a good day',
@@ -103,14 +100,12 @@ tweets = pd.DataFrame(['I am very happy today! The atmosphere looks cheerful',
 # Doing some preprocessing on these tweets as done before
 tweets[0] = tweets[0].str.replace('[^\w\s]',' ')
 from nltk.corpus import stopwords
-stopp = stopwords.words('english')
-tweets[0] = tweets[0].apply(lambda x: " ".join(x for x in x.split() if x not in stopp))
+tweets[0] = tweets[0].apply(lambda x: " ".join(x for x in x.split() if x not in stop))
 from textblob import Word
 tweets[0] = tweets[0].apply(lambda x: " ".join([Word(word).lemmatize() for word in x.split()]))
 
 # Extracting Count Vectors feature from our tweets
 tweet_count = count_vect.transform(tweets[0])
-
 
 #Predicting the emotion of the tweet using our already trained linear SVM
 tweet_pred = lsvm.predict(tweet_count)
