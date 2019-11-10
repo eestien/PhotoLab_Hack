@@ -5,18 +5,52 @@ import numpy as np
 import config as cf
 
 def analyze(data):
-    answers_decode = {0: "empty", 1: 'sadness', 2: 'enthusiasm', 3: 'neutral',
-                      4: 'worry', 5: 'surprise', 6: 'love', 7: 'fun', 8: 'hate',
-                      9: 'happiness', 10: 'boredom', 11: 'relief', 12: 'anger'}
+    answers_decode = {0: [
+"#616161",
+"#9E9E9E",
+"#757575",
+"#536DFE",
+"#607D8B"
+], 1: [
+"#00BCD4",
+"#B3E5FC",
+"#03A9F4",
+"#00BCD4",
+"#00796B"
+], 2: [
+"#00796B",
+"#B2DFDB",
+"#009688",
+"#757575",
+"#FFC107"
+], 3:  [
+"#7B1FA2",
+"#E1BEE7",
+"#FF4081",
+"#9C27B0",
+"#D32F2F"
+], 4: [
+"#E64A19",
+"#D32F2F",
+"#FFEB3B",
+"#E040FB",
+"#F44336"
+], 5: [
+"#FFA000",
+"#FFECB3",
+"#FFC107",
+"#CDDC39",
+"#FFA000"
+]}
     data = data.replace('[^\w\s].',' ').split()
     stop = stopwords.words('english')
     data = list(map(lambda x: " ".join(x for x in x.split() if x not in stop), data))
     data = list(map(lambda x: " ".join([Word(word).lemmatize() for word in x.split()]), data))
-    # count_vect = joblib.load('../model/class_rf_200.joblib')
-    count_vect = joblib.load(cf.EMBEDDINGS_PATH)
+    count_vect = joblib.load('../model/class_triple.joblib')
+    #count_vect = joblib.load(cf.EMBEDDINGS_PATH)
     data_vect = count_vect.transform(data)
-    # rf = joblib.load('../model/rf_200.joblib')
-    rf = joblib.load(cf.MODEL_PATH)
+    rf = joblib.load('../model/rf_triple.joblib')
+    #rf = joblib.load(cf.MODEL_PATH)
     data_pred = list(rf.predict(data_vect))
     data_pred = max(set(data_pred), key=data_pred.count)
     answ = answers_decode.get(data_pred)
@@ -53,4 +87,4 @@ def analyze(tweets):
     print(tweet_pred)
 '''
 if __name__ == '__main__':
-    analyze('I love you')
+    print(analyze('I love you'))

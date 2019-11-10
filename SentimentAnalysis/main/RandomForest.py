@@ -15,22 +15,23 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 
 data = pd.read_csv('../data/text_emotion.csv')
-
+print(data.sentiment.value_counts())
 data = data.drop('author', axis=1)
-'''
+
 # Dropping rows with other emotion labels
 data = data.drop(data[data.sentiment == 'anger'].index)
 data = data.drop(data[data.sentiment == 'boredom'].index)
 data = data.drop(data[data.sentiment == 'enthusiasm'].index)
 data = data.drop(data[data.sentiment == 'empty'].index)
+#data = data.drop(data[data.sentiment == 'sadness'].index)
 data = data.drop(data[data.sentiment == 'fun'].index)
 data = data.drop(data[data.sentiment == 'relief'].index)
 data = data.drop(data[data.sentiment == 'surprise'].index)
-data = data.drop(data[data.sentiment == 'love'].index)
-data = data.drop(data[data.sentiment == 'hate'].index)
-data = data.drop(data[data.sentiment == 'neutral'].index)
-data = data.drop(data[data.sentiment == 'worry'].index)
-'''
+#data = data.drop(data[data.sentiment == 'love'].index)
+#data = data.drop(data[data.sentiment == 'hate'].index)
+#data = data.drop(data[data.sentiment == 'neutral'].index)
+#data = data.drop(data[data.sentiment == 'worry'].index)
+
 # Making all letters lowercase
 data['content'] = data['content'].apply(lambda x: " ".join(x.lower() for x in x.split()))
 
@@ -66,10 +67,11 @@ y = lbl_enc.fit_transform(data.sentiment.values)
 
 # Manual encoding
 uniques = data.sentiment.unique()
+print(uniques)
 for n, uni in enumerate(uniques):
     data.loc[data['sentiment'] == uni , 'sentiment'] = n
 y = data.sentiment
-print(y[:2])
+
 # Splitting into training and testing data in 90:10 ratio
 X_train, X_val, y_train, y_val = train_test_split(data.content.values, y, stratify=y, random_state=42, test_size=0.1, shuffle=True)
 
@@ -77,16 +79,16 @@ X_train, X_val, y_train, y_val = train_test_split(data.content.values, y, strati
 # Extracting Count Vectors Parameters
 count_vect = CountVectorizer(analyzer='word')
 count_vect.fit(data['content'])
-joblib.dump(count_vect, '../model/class_rf_200.joblib')
+joblib.dump(count_vect, '../model/class_triple.joblib')
 X_train_count =  count_vect.transform(X_train)
 X_val_count =  count_vect.transform(X_val)
 
 
 
 # Model 4: Random Forest Classifier
-rf = RandomForestClassifier(n_estimators=200, verbose=10, n_jobs=-1)
+rf = RandomForestClassifier(n_estimators=100, verbose=10, n_jobs=-1)
 rf.fit(X_train_count, y_train)
-# joblib.dump(rf, '../model/rf_200.joblib')
+joblib.dump(rf, '../model/rf_triple.joblib')
 y_pred = rf.predict(X_val_count)
 print('random forest with count vectors accuracy %s' % accuracy_score(y_pred, y_val))
 # random forest with count vectors accuracy 0.7524084778420038
