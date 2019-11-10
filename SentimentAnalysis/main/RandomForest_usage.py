@@ -52,4 +52,5 @@ def analyze(tweets):
     tweet_pred = rf.predict(tweet_count)
     print(tweet_pred)
 '''
-analyze('I love you')
+if __name__ == '__main__':
+    analyze('I love you')
