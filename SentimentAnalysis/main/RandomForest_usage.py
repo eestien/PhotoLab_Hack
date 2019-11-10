@@ -2,7 +2,7 @@ from nltk.corpus import stopwords
 from textblob import Word
 import joblib
 import numpy as np
-
+import config as cf
 
 def analyze(data):
     answers_decode = {0: "empty", 1: 'sadness', 2: 'enthusiasm', 3: 'neutral',
@@ -12,13 +12,15 @@ def analyze(data):
     stop = stopwords.words('english')
     data = list(map(lambda x: " ".join(x for x in x.split() if x not in stop), data))
     data = list(map(lambda x: " ".join([Word(word).lemmatize() for word in x.split()]), data))
-    count_vect = joblib.load('../model/class_rf_200.joblib')
+    # count_vect = joblib.load('../model/class_rf_200.joblib')
+    count_vect = joblib.load(cf.EMBEDDINGS_PATH)
     data_vect = count_vect.transform(data)
-    rf = joblib.load('../model/rf_200.joblib')
+    # rf = joblib.load('../model/rf_200.joblib')
+    rf = joblib.load(cf.MODEL_PATH)
     data_pred = list(rf.predict(data_vect))
-    #data_pred = max(set(data_pred), key=data_pred.count)
-    #answ = answers_decode.get(data_pred)
-    print(data_pred)
+    data_pred = max(set(data_pred), key=data_pred.count)
+    answ = answers_decode.get(data_pred)
+    return answ
 
 '''
 
