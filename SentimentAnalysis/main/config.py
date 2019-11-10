@@ -1,0 +1,2 @@
+EMBEDDINGS_PATH = ''
+MODEL_PATH = ''
