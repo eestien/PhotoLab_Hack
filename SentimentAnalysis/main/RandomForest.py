@@ -31,7 +31,8 @@ data = data.drop(data[data.sentiment == 'surprise'].index)
 #data = data.drop(data[data.sentiment == 'hate'].index)
 #data = data.drop(data[data.sentiment == 'neutral'].index)
 #data = data.drop(data[data.sentiment == 'worry'].index)
-
+uniques = data.sentiment.unique()
+print(uniques)
 # Making all letters lowercase
 data['content'] = data['content'].apply(lambda x: " ".join(x.lower() for x in x.split()))
 
