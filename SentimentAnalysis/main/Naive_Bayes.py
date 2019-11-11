@@ -1,19 +1,11 @@
 import pandas as pd
-import numpy as np
 from nltk.corpus import stopwords
-from textblob import Word
-from sklearn.model_selection import RandomizedSearchCV
 import re
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import accuracy_score
-from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import SGDClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from SentimentAnalysis import config as cf
 import joblib
 data = pd.read_csv('../data/text_emotion.csv')
 print(data.sentiment.unique())
@@ -99,7 +91,6 @@ tweets = pd.DataFrame(['I am very happy today! The atmosphere looks cheerful',
 
 # Doing some preprocessing on these tweets as done before
 tweets[0] = tweets[0].str.replace('[^\w\s]',' ')
-from nltk.corpus import stopwords
 tweets[0] = tweets[0].apply(lambda x: " ".join(x for x in x.split() if x not in stop))
 from textblob import Word
 tweets[0] = tweets[0].apply(lambda x: " ".join([Word(word).lemmatize() for word in x.split()]))
