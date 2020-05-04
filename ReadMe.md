@@ -12,4 +12,4 @@ __Folders structure:__
 
 Text classification accuracy = 87%
 
-![]('Presentation/man.jpg')
+![]('https://github.com/eestien/PhotoLab_Hack/blob/master/Presentation/man.jpg?raw=true')
