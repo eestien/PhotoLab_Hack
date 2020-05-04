@@ -11,3 +11,5 @@ __Folders structure:__
 `Presentation` - case solutuion presentation 
 
 Text classification accuracy = 87%
+
+![]('Presentation/man.jpg')
