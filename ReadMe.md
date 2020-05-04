@@ -12,4 +12,4 @@ __Folders structure:__
 
 Text classification accuracy = 87%
 
-![image]('https://github.com/eestien/PhotoLab_Hack/master/Presentation/man.jpg?raw=true')
+![image](https://github.com/eestien/PhotoLab_Hack/blob/master/Presentation/man.jpg)
